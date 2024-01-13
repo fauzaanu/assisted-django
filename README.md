@@ -17,8 +17,7 @@ significantly reduce the time it takes to create a Django App.
 
 ### Example Video
 
-https://github.com/fauzaanu/assisted-django/blob/main/.README_images/assisted%20django.mp4
-
+https://github.com/fauzaanu/assisted-django/assets/86226565/6c5d9b8a-68c8-4883-a65d-c08c41fbb913
 
 
 
