@@ -9,7 +9,14 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name']
 
 admin.site.register(Post, PostAdmin)
-admin.site.register(Category, CategoryAdmin)"""
+admin.site.register(Category, CategoryAdmin)      
+  
+# NOTES TO DEVELOPER:       
+# [NOTE]       
+# [NOTE]   
+# [NOTE]   
+# [NOTE]    
+"""
 
 FORMS_EXAMPLE = """from django import forms
 from .models import Post, Category
@@ -33,7 +40,14 @@ class CategoryForm(forms.ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-        }"""
+        }   
+             
+# NOTES TO DEVELOPER:       
+# [NOTE]       
+# [NOTE]   
+# [NOTE]   
+# [NOTE]    
+"""
 
 TESTS_EXAMPLE = """from django.test import TestCase
 from .models import Post, Category
@@ -63,7 +77,15 @@ class CategoryModelTest(TestCase):
     def test_name_max_length(self):
         category = Category.objects.get(id=1)
         max_length = category._meta.get_field('name').max_length
-        self.assertEqual(max_length, 200)"""
+        self.assertEqual(max_length, 200)
+        
+        
+# NOTES TO DEVELOPER:       
+# [NOTE]       
+# [NOTE]   
+# [NOTE]   
+# [NOTE]    
+"""
 
 URLS_EXAMPLE = """from django.urls import path
 from . import views
@@ -73,7 +95,14 @@ urlpatterns = [
     path('', views.PostListView.as_view(), name='home'),
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('category/<int:pk>/', views.CategoryListView.as_view(), name='category_list'),
-]"""
+]   
+     
+# NOTES TO DEVELOPER:       
+# [NOTE]       
+# [NOTE]   
+# [NOTE]   
+# [NOTE]    
+"""
 
 VIEWS_EXAMPLE = """from django.views import generic
 from .models import Post, Category
@@ -91,6 +120,12 @@ class CategoryListView(generic.ListView):
     model = Category
     template_name = 'category_list.html'  # your template name
     context_object_name = 'categories'  # your variable name in the template
+        
+# NOTES TO DEVELOPER:       
+# [NOTE]       
+# [NOTE]   
+# [NOTE]   
+# [NOTE]    
 """
 
 MODEL_EXAMPLE = """from django.db import models
@@ -111,17 +146,11 @@ class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.title"""
-
-ADMIN_EXAMPLE = """from django.contrib import admin
-from .models import Post, Category
-
-class PostAdmin(admin.ModelAdmin):
-    list_display = ['title', 'created_on', 'author', 'category']
-
-
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name']
-
-admin.site.register(Post, PostAdmin)
-admin.site.register(Category, CategoryAdmin)"""
+        return self.title    
+            
+# NOTES TO DEVELOPER:       
+# [NOTE]       
+# [NOTE]   
+# [NOTE]   
+# [NOTE]    
+"""

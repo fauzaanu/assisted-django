@@ -12,13 +12,13 @@ class ModelPromptEngine(BriefPromptEngine):
         self.example = MODEL_EXAMPLE
 
 
-
 class FormsPromptEngine(BriefPromptEngine):
     # Forms.py should have access to the models.py
     def __init__(self, generated_models_file):
         super().__init__(generated_models_file)
         self.file = 'forms.py'
         self.example = FORMS_EXAMPLE
+
 
 class ViewsPromptEngine(ModelBriefPromptEngine):
     # Views.py should have access to the brief and models.py
@@ -30,8 +30,8 @@ class ViewsPromptEngine(ModelBriefPromptEngine):
 
 class URLPromptEngine(ViewsPromptEngine):
     # Urls.py should have access to the views.py
-    def __init__(self, generated_views_file):
-        super().__init__(generated_views_file)
+    def __init__(self, generated_views_file, brief):
+        super().__init__(generated_views_file, brief)
         self.file = 'urls.py'
         self.example = URLS_EXAMPLE
 
@@ -46,7 +46,7 @@ class AdminPromptEngine(BriefPromptEngine):
 
 class TestPromptEngine(ViewsPromptEngine):
     # Tests.py should have access to the views.py
-    def __init__(self, generated_views_file):
-        super().__init__(generated_views_file)
+    def __init__(self, generated_views_file,brief):
+        super().__init__(generated_views_file,brief)
         self.file = 'tests.py'
         self.example = TESTS_EXAMPLE

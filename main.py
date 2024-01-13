@@ -9,7 +9,7 @@ def enhance_django_app():
         purpose = f.read()
 
     django_app = DjangoApplication(app_name, purpose, app_directory)
-    django_app.improve_app(cycles=5)  # Use enhance_django_app() instead of create_app()
+    django_app.generate()
 
 
 if __name__ == '__main__':

@@ -22,7 +22,7 @@ class BasePromptEngine:
         This function builds the prompt for a given file.
         """
         system = self.get_system(file)
-        prompt = self.get_response_format(file)
+        prompt = self.get_response_format(file, self.example)
         return system, prompt
 
     def get_prompt(self):
@@ -44,7 +44,7 @@ class ModelBriefPromptEngine(BasePromptEngine):
         """
         system = self.get_system(
             file) + self.additional_instructions + "Models:" + self.generated_models_file + "Brief" + self.brief
-        prompt = self.get_response_format(file)
+        prompt = self.get_response_format(file,self.example)
         return system, prompt
 
 
@@ -61,7 +61,7 @@ class BriefPromptEngine(BasePromptEngine):
         This function builds the prompt for a given file.
         """
         system = self.get_system(file) + self.additional_instructions + "Brief:" + self.brief
-        prompt = self.get_response_format(file)
+        prompt = self.get_response_format(file, self.example)
         return system, prompt
 
 
@@ -78,7 +78,7 @@ class ModelPromptEngine(BriefPromptEngine):
         This function builds the prompt for a given file.
         """
         system = self.get_system(file) + self.additional_instructions + "Models:" + self.generated_models_file
-        prompt = self.get_response_format(file)
+        prompt = self.get_response_format(file,self.example)
         return system, prompt
 
 
@@ -95,5 +95,5 @@ class ViewsPromptEngine(BasePromptEngine):
         This function builds the prompt for a given file.
         """
         system = self.get_system(file) + self.additional_instructions + "Views:" + self.generated_views_file
-        prompt = self.get_response_format(file)
+        prompt = self.get_response_format(file,self.example)
         return system, prompt
