@@ -25,6 +25,9 @@ class BasePromptEngine:
         prompt = self.get_response_format(file)
         return system, prompt
 
+    def get_prompt(self):
+        return self.build_prompt(self.file)
+
 
 class ModelBriefPromptEngine(BasePromptEngine):
     # Views.py should have access to the brief and models.py

@@ -1,7 +1,8 @@
 import os
 import logging
 
-from AssistedDjango.Prompter import Prompter
+from AssistedDjango.PromptEngine import ModelPromptEngine, FormsPromptEngine, ViewsPromptEngine, URLPromptEngine, TestPromptEngine,AdminPromptEngine
+from AssistedDjango.Prompter import Prompter, OpenAISettings
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -9,26 +10,7 @@ logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 class DjangoApplication:
     """
-    :class: DjangoApplication
-
-    A class that represents a Django application.
-
-    :param name: The name of the Django application.
-    :type name: str
-    :param purpose: The purpose of the Django application.
-    :type purpose: str
-    :param directory: The directory path of the Django application.
-    :type directory: str
-
-    :ivar name: The name of the Django application.
-    :ivar purpose: The purpose of the Django application.
-    :ivar directory: The directory path of the Django application.
-    :ivar filepath_mapping: A dictionary mapping file names to their absolute file paths.
-    :ivar prompter: An instance of Prompter class.
-
-    .. automethod:: improve_app
-    .. automethod:: improve_file
-    .. automethod:: _write_to_file
+    This class represents a Django application.
     """
     def __init__(self, name, purpose, directory):
         self.name = name
@@ -37,7 +19,7 @@ class DjangoApplication:
         self.filepath_mapping = {}
         self.prompter = Prompter()
 
-    def improve_app(self, cycles=1):
+    def improve_app(self):
         """
         Improve the application by calling improve_file method for given number of cycles.
 
@@ -46,65 +28,47 @@ class DjangoApplication:
         :return: None
         :rtype: None
         """
-        for _ in range(cycles):
-            for filename in ['models.py', 'forms.py', 'views.py', 'urls.py', 'tests.py', 'admin.py', 'apps.py']:
-                self.improve_file(filename)
+        # openai client
+        oai_client = OpenAISettings()
 
-    def improve_file(self, filename):
-        """
-        Improve the content of a file.
+        # 1. Create the models for the project brief
+        models_prompt = ModelPromptEngine(self.purpose)
+        system, prompt = models_prompt.get_prompt()
+        models_file_content = oai_client.prompt(system, prompt)
+        with open(os.path.join(self.directory, 'models.py'), 'w') as f:
+            f.write(models_file_content)
 
-        :param filename: The name of the file to be improved.
-        :type filename: str
-        :return: None
-        :rtype: None
-        """
-        absolute_file_path = os.path.join(self.directory, filename)
+        # 2. Create the forms for the models
+        forms_prompt = FormsPromptEngine(self.purpose)
+        system, prompt = forms_prompt.get_prompt()
+        forms_file_content = oai_client.prompt(system, prompt)
+        with open(os.path.join(self.directory, 'forms.py'), 'w') as f:
+            f.write(forms_file_content)
 
-        # Ensure the file exists
-        if not os.path.isfile(absolute_file_path):
-            logging.error(f"{filename} does not exist in {self.name} application directory.")
-            return
+        # 3. Create the views for the forms
+        views_prompt = ViewsPromptEngine(self.purpose)
+        system, prompt = views_prompt.get_prompt()
+        views_file_content = oai_client.prompt(system, prompt)
+        with open(os.path.join(self.directory, 'views.py'), 'w') as f:
+            f.write(views_file_content)
 
-        # Ensure the method to prompt improved content exists
-        prompt_method = getattr(self.prompter, f"{filename.split('.')[0]}_prompt", None)
-        if not prompt_method:
-            logging.error(f"No corresponding method found in Prompter for improving {filename}")
-            return
+        # 4. Create the urls for the views
+        urls_prompt = URLPromptEngine(self.purpose)
+        system, prompt = urls_prompt.get_prompt()
+        urls_file_content = oai_client.prompt(system, prompt)
+        with open(os.path.join(self.directory, 'urls.py'), 'w') as f:
+            f.write(urls_file_content)
 
-        # Generate improved content
-        improved_content = prompt_method(self.purpose)
+        # 5. Create the admin for the models
+        admin_prompt = AdminPromptEngine(self.purpose)
+        system, prompt = admin_prompt.get_prompt()
+        admin_file_content = oai_client.prompt(system, prompt)
+        with open(os.path.join(self.directory, 'admin.py'), 'w') as f:
+            f.write(admin_file_content)
 
-        # Write the improved content to the file (overwriting existing content)
-        try:
-            with open(absolute_file_path, 'w') as f:
-                f.write(improved_content)
-            self.filepath_mapping[filename] = absolute_file_path
-            logging.info(f"Updated file {absolute_file_path}")  # Log the absolute file path
-        except Exception as e:
-            logging.error(f"Failed to update file {absolute_file_path}: {str(e)}")
-
-    def _write_to_file(self, file_path, content):
-        """
-        :param file_path: The path to the file where the content will be written.
-        :type file_path: str
-        :param content: The content to be written to the file.
-        :type content: str
-        :return: None
-        :rtype: None
-
-        This method writes the given content to the specified file. It replaces any occurrence of "```" and "```python" with an empty string in the content before writing it to the file. After
-        * successful writing, it updates the filepath_mapping dictionary with the file name as the key and the absolute file path as the value. It also logs the absolute file path using the
-        * logging module. If an exception occurs during the writing process, an error message is logged.
-        """
-        try:
-            # TODO:replace possible backslashes with forward slashes left by openai
-            # ``` and ```python
-            content = content.replace("```", "").replace("```python", "")
-            with open(file_path, 'w') as f:
-                f.write(content)
-            file_name = os.path.basename(file_path)  # Extract file_name from the absolute file_path
-            self.filepath_mapping[file_name] = file_path
-            logging.info(f"Updated file {file_path}")  # Log the absolute file path
-        except Exception as e:
-            logging.error(f"Failed to update file {file_path}: {str(e)}")
+        # 6. Create the tests for the views
+        tests_prompt = TestPromptEngine(self.purpose)
+        system, prompt = tests_prompt.get_prompt()
+        tests_file_content = oai_client.prompt(system, prompt)
+        with open(os.path.join(self.directory, 'tests.py'), 'w') as f:
+            f.write(tests_file_content)

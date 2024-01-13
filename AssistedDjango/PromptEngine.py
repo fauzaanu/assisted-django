@@ -4,12 +4,13 @@ from AssistedDjango.examples import VIEWS_EXAMPLE, URLS_EXAMPLE, ADMIN_EXAMPLE, 
     MODEL_EXAMPLE
 
 
-class ModelPromptEngline(BriefPromptEngine):
+class ModelPromptEngine(BriefPromptEngine):
     # Models.py should have access to the brief
     def __init__(self, brief):
         super().__init__(brief)
         self.file = 'models.py'
         self.example = MODEL_EXAMPLE
+
 
 
 class FormsPromptEngine(BriefPromptEngine):
