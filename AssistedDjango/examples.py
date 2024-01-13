@@ -19,31 +19,57 @@ admin.site.register(Category, CategoryAdmin)
 """
 
 FORMS_EXAMPLE = """from django import forms
-from .models import Post, Category
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit
+from .models import Users, Posts, Comments, Replies
 
-class PostForm(forms.ModelForm):
+class UsersForm(forms.ModelForm):
     class Meta:
-        model = Post
-        fields = ['title', 'content', 'category']
+        model = Users
+        fields = ['name', 'email', 'password']
 
-        widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
-            'category': forms.Select(attrs={'class': 'form-control'}),
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
 
-
-class CategoryForm(forms.ModelForm):
+class PostsForm(forms.ModelForm):
     class Meta:
-        model = Category
-        fields = ['name']
+        model = Posts
+        fields = ['user_id', 'post_text']
 
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-        }   
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+class CommentsForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['user_id', 'comment_text']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+class RepliesForm(forms.ModelForm):
+    class Meta:
+        model = Replies
+        fields = ['user_id', 'reply_text']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+ 
              
 # NOTES TO DEVELOPER:       
-# [NOTE]       
+# You will need to install crispy_forms in your virtual environment.
 # [NOTE]   
 # [NOTE]   
 # [NOTE]    
