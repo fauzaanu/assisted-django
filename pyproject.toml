@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "django-app-generator"
+version = "0.1.0"
+description = ""
+authors = ["fauzaanu <fauzaangasim@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openai = "^1.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
