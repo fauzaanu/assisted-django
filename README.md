@@ -48,3 +48,5 @@ replace the content in the files.
 
 Rightnow through simply prompting I could not get the responses to remove the markdown code comments, so you would have
 to manually remove them.
+
+This repo already has django and everything in the requirements.txt file, so you can just clone this repo and test it

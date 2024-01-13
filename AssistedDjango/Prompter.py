@@ -112,9 +112,7 @@ class Prompter:
         prompt = self.build_prompt(filename, purpose)
         messages = [
             {"role": "system",
-             "content": f"You are a Django code writer. You're providing the content for the {filename} file for a "
-                        f"new Django application. Any additional text should be left in python comments and you are "
-                        f"not allowed to use ``` or ```python"},
+             "content": f"You are a django code generation application."},
             {"role": "user", "content": prompt}
         ]
 
