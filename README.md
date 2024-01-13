@@ -17,9 +17,7 @@ significantly reduce the time it takes to create a Django App.
 
 ### Example Video
 
-<video width="500" height="500" src="https://github.com/fauzaanu/assisted-django/blob/main/.README_images/assisted%20django.mp4" controls>
-  Your browser does not support the video tag.
-</video>
+https://github.com/fauzaanu/assisted-django/blob/main/.README_images/assisted%20django.mp4
 
 
 
