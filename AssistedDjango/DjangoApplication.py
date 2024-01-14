@@ -151,7 +151,11 @@ class DjangoApplication:
                       f"following are additional details that maybe relevant to the template creation:")
             system += "\n\n Models: \n\n" + models_file_content
             system += "\n\n Views: \n\n" + views_file_content
-            prompt = f"Create semantic and accessible HTML for the {template} template."
+            system += "\n\n Urls: \n\n" + urls_file_content
+            prompt = (f"Create a responsive and accessible HTML markup for {template} template using Bootstrap. "
+                      f"Utilize Bootstrap's grid system, components, and utility classes for efficient design. Ensure "
+                      f"semantic structure with HTML tags, incorporate ARIA for accessibility, and validate markup "
+                      f"for standards compliance.")
             answer = oai_client.prompt(system, prompt)
             with open(template_file, 'w') as f:
                 f.write(answer)
