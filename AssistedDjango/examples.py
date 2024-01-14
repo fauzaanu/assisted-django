@@ -180,3 +180,61 @@ class Post(models.Model):
 # [NOTE]   
 # [NOTE]    
 """
+SIGNALS_EXAMPLE = """from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from django.db import models
+
+from .models import Post, Category
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    \"""
+    Create a user profile when a new User is created.
+    \"""
+    if created:
+        # You can customize this logic based on your needs
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=Post)
+def update_post_count(sender, instance, created, **kwargs):
+    \"""
+    Update the post count in the author's profile when a new post is created.
+    \"""
+    if created:
+        author_profile = instance.author.profile
+        author_profile.post_count += 1
+        author_profile.save()
+
+@receiver(post_delete, sender=Post)
+def decrease_post_count(sender, instance, **kwargs):
+    \"""
+    Decrease the post count in the author's profile when a post is deleted.
+    \"""
+    author_profile = instance.author.profile
+    author_profile.post_count -= 1
+    author_profile.save()
+
+@receiver(post_save, sender=Category)
+def update_category_count(sender, instance, created, **kwargs):
+    \"""
+    Update the post count in the category when a new post is created.
+    \"""
+    if created:
+        instance.post_count = instance.post_set.count()
+        instance.save()
+
+@receiver(post_delete, sender=Category)
+def decrease_category_count(sender, instance, **kwargs):
+    \"""
+    Decrease the post count in the category when a post is deleted.
+    \"""
+    instance.post_count = instance.post_set.count()
+    instance.save()
+    
+# NOTES TO DEVELOPER:       
+# [NOTE]       
+# [NOTE]   
+# [NOTE]   
+# [NOTE]    
+"""

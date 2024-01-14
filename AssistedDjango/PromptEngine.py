@@ -1,7 +1,7 @@
 from AssistedDjango.BasePromptEngine.BasePromptEngine import ModelBriefPromptEngine, \
     BriefPromptEngine
 from AssistedDjango.examples import VIEWS_EXAMPLE, URLS_EXAMPLE, ADMIN_EXAMPLE, TESTS_EXAMPLE, FORMS_EXAMPLE, \
-    MODEL_EXAMPLE
+    MODEL_EXAMPLE, SIGNALS_EXAMPLE
 
 
 class ModelPromptEngine(BriefPromptEngine):
@@ -46,7 +46,15 @@ class AdminPromptEngine(BriefPromptEngine):
 
 class TestPromptEngine(ViewsPromptEngine):
     # Tests.py should have access to the views.py
-    def __init__(self, generated_views_file,brief):
-        super().__init__(generated_views_file,brief)
+    def __init__(self, generated_views_file, brief):
+        super().__init__(generated_views_file, brief)
         self.file = 'tests.py'
         self.example = TESTS_EXAMPLE
+
+
+class SignalsPromptEngine(ModelBriefPromptEngine):
+    # Views.py should have access to the brief and models.py
+    def __init__(self, generated_models_file, brief):
+        super().__init__(generated_models_file, brief)
+        self.file = 'signals.py'
+        self.example = SIGNALS_EXAMPLE

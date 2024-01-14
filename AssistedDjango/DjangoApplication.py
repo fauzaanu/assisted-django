@@ -2,7 +2,7 @@ import os
 import logging
 
 from AssistedDjango.PromptEngine import ModelPromptEngine, FormsPromptEngine, ViewsPromptEngine, URLPromptEngine, \
-    TestPromptEngine, AdminPromptEngine
+    TestPromptEngine, AdminPromptEngine, SignalsPromptEngine
 from AssistedDjango.Prompter import OpenAISettings
 
 # Configure logging
@@ -104,3 +104,13 @@ class DjangoApplication:
             tests_file_content = self.clean_file(tests_file_content)
             f.write(tests_file_content)
             logging.info("tests.py Updated!")
+
+        # 7. Create the signals for the models
+        logging.info("Creating signals.py")
+        signals_prompt = SignalsPromptEngine(models_file_content, self.purpose)
+        system, prompt = signals_prompt.get_prompt()
+        signals_file_content = oai_client.prompt(system, prompt)
+        with open(os.path.join(self.directory, 'signals.py'), 'w') as f:
+            signals_file_content = self.clean_file(signals_file_content)
+            f.write(signals_file_content)
+            logging.info("signals.py Updated!")
