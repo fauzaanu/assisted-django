@@ -1,58 +1,48 @@
 # Assisted Django
 
-Given a proper project brief, and the location of the **Django App**, this script will automatically update the `models.py`, `views.py`, `urls.py`, `admin.py`, `tests.py`, `forms.py`, `signals.py` files, and generate corresponding `HTML` templates for your Django application.
+Assisted Django is a python package that uses OpenAI's gpt-3 / 4 to generate Django code based on a project brief.
 
-> This script does not do anything to the Project Directory, it only updates the content in a Django App Directory.
+This script would generate the following files for you:
+- [x] models.py
+- [x] views.py
+- [x] urls.py
+- [x] admin.py
+- [x] tests.py
+- [x] forms.py
+- [x] signals.py
+- [x] HTML templates
 
-This script is very opinionated at how it does things. This is not a fully automated solution, but I think it could
-significantly reduce the time it takes to create a Django App.
+You can also let the script generate the detailed project brief by passing `better_brief=True` to the `generate` method.
 
-> Spend a good amount of time planning the project in the brief, and the script will basically write the models, views,
-> urls, admin, tests and forms for you. (You will still likely need to make changes)
-
-### How this works in a diagram
-
-![](.README_images/d14736be.png)
+> This script is not meant to replace the startapp command, but meant to be run after the startapp command has generated the basic files. However, you do not need to create the additional files (such as forms.py, signals.py, tests.py, urls.py etc) as this script will create them for you.
 
 ### Example Video
 
 https://github.com/fauzaanu/assisted-django/assets/86226565/6c5d9b8a-68c8-4883-a65d-c08c41fbb913
 
+##### Example of how to run this: (Video is outdated, and before template generation was added)
 
-### Your workflow to use this properly
-
-1. **Install Django**: `pip install django`
-2. **Create a Django Project**: `django-admin createproject Project`
-3. **Navigate to the Project Directory**: `cd Project`
-4. **Create a New App**: `python manage.py startapp appname`
-5. **Create a README.md or a textfile**: This file should contain a brief description of the project and its purpose.
-   Try to highlight the database design in this file, and features.
-6. **Create a .env file**: This file should contain the `OPENAI_API_KEY`
-7. If the project is rather complex, overide the default model from gpt-3 to gpt-4. (Or write better briefs?)
-
-##### Example of how to run this:
+1. Make a django project and create a new app as usual
+2. `pip install assisted-django`
+3. On the same level as manage.py, create a python file (generate.py for example)
+4. Use the code below as a template, and replace the app_name, app_directory, and purpose variables with your own.
+5. before running set the `OPENAI_API_KEY` environment variable to your openai api key
 
 ```python
-from AssistedDjango.DjangoApplication import DjangoApplication
+from assisted_django.DjangoApplication import DjangoApplication
 
 
 def enhance_django_app():
-    app_name = "django_app_name_here"  # replace with your actual Django app name
-    app_directory = "Basic/manual_checklist"  # replace with your actual Django app directory
-    # basic is the Project Directory
-    # manual_checklist is the Django App Directory
-    # This script does not do anything to the Project Directory
+    app_name = "fakebook_clone"  # replace with your actual Django app name (NOT PROJECT NAME)
+    app_directory = "Basic/fakebook_clone"  # replace with your actual Django app directory (ProjectDir/Appdir)
 
-    with open("checklist", "r") as f:  # replace with your actual project brief
+    with open("../fakebook_clone", "r") as f:  # Replace with your actual Project Brief
         purpose = f.read()
 
     django_app = DjangoApplication(app_name, purpose, app_directory)
-    django_app.generate()
+    django_app.generate(better_brief=True) # better_brief=True would generate a better brief first
 
 
 if __name__ == '__main__':
     enhance_django_app()
 ```
-
-This repo already has django in the requirements.txt file, so you can just clone this repo and test within the repo
-directory.

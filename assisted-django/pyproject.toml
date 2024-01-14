@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "assisted-django"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generate an entire django app with models, forms, views, urls, signals, tests and templates using gpt3 or 4"
 authors = ["fauzaanu <hello@fauzaanu.com>"]
 readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/fauzaanu/assisted-django"
 
 [tool.poetry.dependencies]
 python = "^3.10"
