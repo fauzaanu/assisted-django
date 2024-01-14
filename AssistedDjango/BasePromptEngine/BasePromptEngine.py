@@ -37,6 +37,7 @@ class ModelBriefPromptEngine(BasePromptEngine):
         self.brief = brief
         self.additional_instructions = "based on the following models and project brief."
 
+
     # override the base response format to add models.py as views should have access to the models.py
     def build_prompt(self, file):
         """

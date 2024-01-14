@@ -67,7 +67,7 @@ class DjangoApplication:
 
         # 3. Create the views for the forms
         logging.info("Creating views.py")
-        views_prompt = ViewsPromptEngine(models_file_content, self.purpose)
+        views_prompt = ViewsPromptEngine(models_file_content, self.purpose, self.name)
         system, prompt = views_prompt.get_prompt()
         views_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'views.py'), 'w') as f:
@@ -77,7 +77,7 @@ class DjangoApplication:
 
         # 4. Create the urls for the views
         logging.info("Creating urls.py")
-        urls_prompt = URLPromptEngine(views_file_content, self.purpose)
+        urls_prompt = URLPromptEngine(views_file_content, self.purpose, self.name)
         system, prompt = urls_prompt.get_prompt()
         urls_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'urls.py'), 'w') as f:
@@ -97,7 +97,7 @@ class DjangoApplication:
 
         # 6. Create the tests for the views
         logging.info("Creating tests.py")
-        tests_prompt = TestPromptEngine(views_file_content, self.purpose)
+        tests_prompt = TestPromptEngine(views_file_content, self.purpose, self.name)
         system, prompt = tests_prompt.get_prompt()
         tests_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'tests.py'), 'w') as f:
@@ -114,3 +114,49 @@ class DjangoApplication:
             signals_file_content = self.clean_file(signals_file_content)
             f.write(signals_file_content)
             logging.info("signals.py Updated!")
+
+
+        # 8. Create the templates for the views
+        logging.info("Creating templates")
+        templates_directory = os.path.join(self.directory, 'templates')
+        if not os.path.exists(templates_directory):
+            os.makedirs(templates_directory)
+
+        # namespace directory with app name
+        templates_directory = os.path.join(templates_directory, self.name)
+        if not os.path.exists(templates_directory):
+            os.makedirs(templates_directory)
+
+        # find the mention of the template directory in the views.py file
+        # 'self.name/*.html'
+
+        # find all the template names in the views.py file
+        templates = []
+        for line in views_file_content.split("\n"):
+            if "template_name" in line:
+                # additionally ensure that .html and self.name are in the line
+                if ".html" in line and self.name in line:
+                    import re
+                    # format: /*.html or \w+\.html
+                    # followed by a slash have any name and ends with .html
+                    template_name = re.findall(r'\w+\.html', line)[0]
+                    templates.append(template_name)
+
+        logging.info(f"Found the following templates: {templates}")
+        # create the templates
+        for template in templates:
+            template_file = os.path.join(templates_directory, template)
+            # call openai directly
+            system = (f"You are tasked with creating the {template} template for the {self.name} application. The "
+                      f"following are additional details that maybe relevant to the template creation:")
+            system += "\n\n Models: \n\n" + models_file_content
+            system += "\n\n Views: \n\n" + views_file_content
+            prompt = f"Create semantic and accessible HTML for the {template} template."
+            answer = oai_client.prompt(system, prompt)
+            with open(template_file, 'w') as f:
+                f.write(answer)
+                logging.info(f"{template} Updated!")
+
+        logging.info("All Template files updated!")
+
+
