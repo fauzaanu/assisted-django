@@ -1,7 +1,6 @@
 # Assisted Django
 
-Given a proper project brief, and the location of the **Django App** this script will automatically automatically update
-the `models.py`, `views.py`, `urls.py`, `admin.py` `tests.py` and `forms.py` files.
+Given a proper project brief, and the location of the **Django App**, this script will automatically update the `models.py`, `views.py`, `urls.py`, `admin.py`, `tests.py`, `forms.py`, `signals.py` files, and generate corresponding `HTML` templates for your Django application.
 
 > This script does not do anything to the Project Directory, it only updates the content in a Django App Directory.
 
