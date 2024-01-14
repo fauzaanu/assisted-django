@@ -9,7 +9,7 @@ def enhance_django_app():
         purpose = f.read()
 
     django_app = DjangoApplication(app_name, purpose, app_directory)
-    django_app.generate()
+    django_app.generate(better_brief=True)
 
 
 if __name__ == '__main__':

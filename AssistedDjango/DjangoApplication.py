@@ -9,9 +9,6 @@ from AssistedDjango.Prompter import OpenAISettings
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 
-
-
-
 class DjangoApplication:
     """
     This class represents a Django application.
@@ -22,7 +19,7 @@ class DjangoApplication:
         self.purpose = purpose
         self.directory = directory
 
-    def clean_file(self,file_content):
+    def clean_file(self, file_content):
         clean_string = [
             "```python",
             "```",
@@ -34,7 +31,7 @@ class DjangoApplication:
 
         return file_content
 
-    def generate(self):
+    def generate(self, better_brief=False):
         """
         This function generates the content for the Django application.
 
@@ -45,6 +42,19 @@ class DjangoApplication:
         """
         # openai client
         oai_client = OpenAISettings()
+
+        if better_brief:
+            # improve the brief
+            system = (f"You are tasked with expanding and detailing on the django project brief for the {self.name} "
+                      f"application. The general ideas for the brief are: \n\n {self.purpose}")
+            prompt = (f"Expand on the brief for the {self.name} application. Include details such as the purpose of "
+                      f"the application, the base level functionality, and the database design")
+
+            self.purpose = oai_client.prompt(system, prompt)
+
+            with open(os.path.join(self.directory, 'better_brief.md'), 'w') as f:
+                f.write(self.purpose)
+                logging.info("brief Updated!")
 
         # 1. Create the models for the project brief
         logging.info("Creating models.py")
@@ -115,7 +125,6 @@ class DjangoApplication:
             f.write(signals_file_content)
             logging.info("signals.py Updated!")
 
-
         # 8. Create the templates for the views
         logging.info("Creating templates")
         templates_directory = os.path.join(self.directory, 'templates')
@@ -162,5 +171,3 @@ class DjangoApplication:
                 logging.info(f"{template} Updated!")
 
         logging.info("All Template files updated!")
-
-
