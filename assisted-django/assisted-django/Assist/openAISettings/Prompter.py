@@ -1,6 +1,7 @@
 import os
+
 from dotenv import load_dotenv
-from openai import ChatCompletion, OpenAI
+from openai import OpenAI
 
 
 class OpenAISettings:

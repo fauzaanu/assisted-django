@@ -1,12 +1,12 @@
 import os
-import logging
+import random
 
-from AssistedDjango.PromptEngine import ModelPromptEngine, FormsPromptEngine, ViewsPromptEngine, URLPromptEngine, \
-    TestPromptEngine, AdminPromptEngine, SignalsPromptEngine
-from AssistedDjango.Prompter import OpenAISettings
+import rich
+import typer
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+from .openAISettings.Prompter import OpenAISettings
+from .PromptEngine.Prompts import ModelPromptEngine, FormsPromptEngine, ViewsPromptEngine, URLPromptEngine, \
+    AdminPromptEngine, TestPromptEngine, SignalsPromptEngine
 
 
 class DjangoApplication:
@@ -14,7 +14,7 @@ class DjangoApplication:
     This class represents a Django application.
     """
 
-    def __init__(self, name, purpose, directory):
+    def __init__(self, name, purpose, directory, nolog=True):
         self.name = name
         self.purpose = purpose
         self.directory = directory
@@ -26,7 +26,7 @@ class DjangoApplication:
         ]
         for string in clean_string:
             if string in file_content:
-                logging.info(f"Removing {string} from file")
+                typer.echo(f"Removing {string} from file")
                 file_content = file_content.replace(string, "")
 
         return file_content
@@ -45,88 +45,110 @@ class DjangoApplication:
 
         if better_brief:
             # improve the brief
-            system = (f"You are tasked with expanding and detailing on the django project brief for the {self.name} "
-                      f"application. The general ideas for the brief are: \n\n {self.purpose}")
-            prompt = (f"Expand on the brief for the {self.name} application. Include details such as the purpose of "
+            system = (f"You are tasked with expanding and detailing on the django project brief for an application. "
+                      f"The general ideas for the brief are as follows: \n\n {self.purpose}")
+            prompt = (f"Expand on the brief for the django application. Include details such as the purpose of "
                       f"the application, the base level functionality, and the database design")
 
             self.purpose = oai_client.prompt(system, prompt)
 
-            with open(os.path.join(self.directory, 'better_brief.md'), 'w') as f:
+            random_number = random.randint(0, 1000)
+            # ensure file does not exist
+            while os.path.exists(os.path.join(self.directory, f'better_brief_{random_number}.md')):
+                random_number = random.randint(0, 1000)
+
+            with open(os.path.join(self.directory, f'better_brief_{random_number}.md'), 'w') as f:
                 f.write(self.purpose)
-                logging.info("brief Updated!")
+                # logging.info("brief Updated!")
+                # typer.echo("brief Updated!")
+                rich.print(f"[bold green]:heavy_check_mark: brief Updated![/bold green]")
 
         # 1. Create the models for the project brief
-        logging.info("Creating models.py")
+        # logging.info("Creating models.py")
+        # typer.echo("🤖 Creating models.py")
+        rich.print(f":snake: Creating models.py")
         models_prompt = ModelPromptEngine(self.purpose)
         system, prompt = models_prompt.get_prompt()
         models_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'models.py'), 'w') as f:
             models_file_content = self.clean_file(models_file_content)
             f.write(models_file_content)
-            logging.info("models.py Updated!")
+            # logging.info("models.py Updated!")
+            # typer.echo("✅ models.py Updated!")
+            rich.print(f"[bold green]:heavy_check_mark: models.py Updated![/bold green]")
 
         # 2. Create the forms for the models
-        logging.info("Creating forms.py")
+        # typer.echo("🤖 Creating forms.py")
+        rich.print(f":snake: Creating forms.py")
         forms_prompt = FormsPromptEngine(models_file_content)
         system, prompt = forms_prompt.get_prompt()
         forms_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'forms.py'), 'w') as f:
             f.write(forms_file_content)
-            logging.info("forms.py Updated!")
+            # typer.echo("✅ forms.py Updated!")
+            rich.print(f"[bold green]:heavy_check_mark: forms.py Updated![/bold green]")
 
         # 3. Create the views for the forms
-        logging.info("Creating views.py")
+        # typer.echo("🤖 Creating views.py")
+        rich.print(f":snake: Creating views.py")
         views_prompt = ViewsPromptEngine(models_file_content, self.purpose, self.name)
         system, prompt = views_prompt.get_prompt()
         views_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'views.py'), 'w') as f:
             views_file_content = self.clean_file(views_file_content)
             f.write(views_file_content)
-            logging.info("views.py Updated!")
+            # typer.echo("✅ views.py Updated!")
+            rich.print(f"[bold green]:heavy_check_mark: views.py Updated![/bold green]")
 
         # 4. Create the urls for the views
-        logging.info("Creating urls.py")
+        typer.echo("🤖 Creating urls.py")
         urls_prompt = URLPromptEngine(views_file_content, self.purpose, self.name)
         system, prompt = urls_prompt.get_prompt()
         urls_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'urls.py'), 'w') as f:
             urls_file_content = self.clean_file(urls_file_content)
             f.write(urls_file_content)
-            logging.info("urls.py Updated!")
+            # typer.echo("✅ urls.py Updated!")
+            rich.print(f"[bold green]:heavy_check_mark: urls.py Updated![/bold green]")
 
         # 5. Create the admin for the models
-        logging.info("Creating admin.py")
+        # typer.echo("🤖 Creating admin.py")
+        rich.print(f":snake: Creating admin.py")
         admin_prompt = AdminPromptEngine(models_file_content)
         system, prompt = admin_prompt.get_prompt()
         admin_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'admin.py'), 'w') as f:
             admin_file_content = self.clean_file(admin_file_content)
             f.write(admin_file_content)
-            logging.info("admin.py Updated!")
+            # typer.echo("✅ admin.py Updated!")
+            rich.print(f"[bold green]:heavy_check_mark: admin.py Updated![/bold green]")
 
         # 6. Create the tests for the views
-        logging.info("Creating tests.py")
+        typer.echo("🤖 Creating tests.py")
         tests_prompt = TestPromptEngine(views_file_content, self.purpose, self.name)
         system, prompt = tests_prompt.get_prompt()
         tests_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'tests.py'), 'w') as f:
             tests_file_content = self.clean_file(tests_file_content)
             f.write(tests_file_content)
-            logging.info("tests.py Updated!")
+            # typer.echo("✅ tests.py Updated!")
+            rich.print(f"[bold green]:heavy_check_mark: tests.py Updated![/bold green]")
 
         # 7. Create the signals for the models
-        logging.info("Creating signals.py")
+        # typer.echo("🤖 Creating signals.py")
+        rich.print(f":snake: Creating signals.py")
         signals_prompt = SignalsPromptEngine(models_file_content, self.purpose)
         system, prompt = signals_prompt.get_prompt()
         signals_file_content = oai_client.prompt(system, prompt)
         with open(os.path.join(self.directory, 'signals.py'), 'w') as f:
             signals_file_content = self.clean_file(signals_file_content)
             f.write(signals_file_content)
-            logging.info("signals.py Updated!")
+            # typer.echo("✅ signals.py Updated!")
+            rich.print(f"[bold green]:heavy_check_mark: signals.py Updated![/bold green]")
 
         # 8. Create the templates for the views
-        logging.info("Creating templates")
+        # typer.echo("🤖 Creating templates")
+        rich.print(f":snake: Creating templates")
         templates_directory = os.path.join(self.directory, 'templates')
         if not os.path.exists(templates_directory):
             os.makedirs(templates_directory)
@@ -151,7 +173,7 @@ class DjangoApplication:
                     template_name = re.findall(r'\w+\.html', line)[0]
                     templates.append(template_name)
 
-        logging.info(f"Found the following templates: {templates}")
+        rich.print(f":magnifying_glass_tilted_left: Found the following templates: {templates}")
         # create the templates
         for template in templates:
             template_file = os.path.join(templates_directory, template)
@@ -168,6 +190,11 @@ class DjangoApplication:
             answer = oai_client.prompt(system, prompt)
             with open(template_file, 'w') as f:
                 f.write(answer)
-                logging.info(f"{template} Updated!")
+                # logging.info(f"{template} Updated!")
+                # typer.echo(f"✅ {template} Updated!")
+                rich.print(f"[bold green]:heavy_check_mark: {template} Updated![/bold green]")
 
-        logging.info("All Template files updated!")
+        # logging.info("All Template files updated!")
+        # [bold red]Alert![/bold red] [green]Portal gun[/green] shooting! :boom:
+        # typer.echo("✅✅ All Template files updated!")
+        rich.print("[bold green]:heavy_check_mark: All Template files updated![/bold green]")
