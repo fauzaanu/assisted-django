@@ -48,11 +48,11 @@ class URLPromptEngine(ViewsPromptEngine):
         self.example = URLS_EXAMPLE
 
 
-class AdminPromptEngine(BriefPromptEngine):
+class AdminPromptEngine(ModelPromptEngine):
     # Admin.py should have access to the models.py
     def __init__(self, generated_models_file):
         super().__init__(generated_models_file)
-        self.file = 'views.py'
+        self.file = 'admin.py'
         self.example = ADMIN_EXAMPLE
 
 
