@@ -1,5 +1,7 @@
 # Assisted Django
 
+[![PyPI version](https://badge.fury.io/py/assisted-django.svg)](https://badge.fury.io/py/assisted-django)
+
 A CLI Tool to generate content for all files in a django app directory including templates with the help of openai models
 
 This script would generate the following files for you:

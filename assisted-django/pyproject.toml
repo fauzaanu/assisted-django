@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "assisted-django"
-version = "0.2.5"
+version = "0.2.7"
 description = "CLI Tool to generate content for all files in a django app directory including all the templates with the help of OpenAI Models"
 authors = ["fauzaanu <hello@fauzaanu.com>"]
 readme = "README.md"
